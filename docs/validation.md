@@ -1,0 +1,10 @@
+# Verified locally — October 3, 2026
+
+- 33 automated tests passed on Python 3.12. Includes strict parsing/line mapping, AST risks and clean controls, model citation/schema rejection, honest AI fallback, GitHub importer stubs, snapshot integrity, SQLite feedback/deletion and loopback HTTP request boundaries.
+- Static development benchmark: 18 synthetic cases, 8 labeled positives, 9 clean controls and 1 unsupported-context control. 8 true positives, 0 false positives and 0 misses on this public development set. These are coverage checks, not estimates of production or AI accuracy.
+- Real local AI smoke test: installed `qwen3:4b` returned schema-valid added-line findings for the synthetic cart sample in approximately 43 seconds. Model digest: `359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7`. Temperature 0, thinking disabled. One successful smoke test does not establish semantic quality or injection resistance. The earlier 20-second cold call timed out and correctly fell back; the final client timeout is 45 seconds.
+- Live public import: [psf/requests PR 7586](https://github.com/psf/requests/pull/7586), head `9820a0c297d4c3e3f7359b617b5082f24c63c79e`, returned two Python source files and a 1,598-byte diff with no coverage warnings. Head/base consistency recheck succeeded. Tests also verify refusal when a snapshot changes or imported input is modified.
+- Browser checks: sample review yielded three static findings at cart lines 3, 8 and 11; changed-line highlighting and useful feedback worked. Evaluation dashboard rendered 18 cases and all five categories. At a 390-pixel viewport, the review and benchmark had no document-level horizontal overflow.
+- Repository package contains no runtime databases, credentials, complete imported source, personal files or chat histories. Screenshots show only the synthetic app demo.
+
+GitHub Actions config targets Python 3.12 and 3.13; a local test run does not establish hosted CI success. Browser and network smoke tests are recorded separately from deterministic automated tests.
