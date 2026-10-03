@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>PatchPilot · Review with evidence</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <a class="brand" href="/"
+        ><span class="brandmark">P<span>↗</span></span
+        >PatchPilot</a
+      >
+      <div class="workspace-label">DEVELOPER WORKSPACE</div>
+      <nav aria-label="Main navigation">
+        <button class="nav active" data-view="review">
+          <span>⌘</span> Review workspace</button
+        ><button class="nav" data-view="evaluate">
+          <span>◫</span> Evaluation lab</button
+        ><button class="nav" data-view="history">
+          <span>◷</span> Review history
+        </button>
+      </nav>
+      <div class="sidebar-bottom">
+        <span class="local-dot"></span> Runs on your machine
+        <p>Python review. Evidence first.</p>
+        <span class="version">v1.0 · OPEN SOURCE</span>
+      </div>
+    </aside>
+    <div class="shell">
+      <header>
+        <div>
+          <span class="header-label">YOUR SECOND SET OF EYES</span
+          ><span class="header-path" id="breadcrumb"
+            >Workspace / New review</span
+          >
+        </div>
+        <span class="status-pill"
+          ><span class="local-dot"></span> Local workspace</span
+        >
+      </header>
+      <main>
+        <div id="notice" role="status" aria-live="polite" hidden></div>
+        <section id="view-review" class="view">
+          <div class="page-heading">
+            <div>
+              <div class="eyebrow">CODE REVIEW, WITH CONTEXT</div>
+              <h1>Ship with a second look<span>.</span></h1>
+              <p>
+                Find risky changes. Inspect the evidence. Keep the judgment.
+              </p>
+            </div>
+            <button id="demo" class="button secondary">
+              Try a sample PR <span>↗</span>
+            </button>
+          </div>
+          <div class="workflow">
+            <span class="step active"><b>01</b> Add a change</span
+            ><span class="connector"></span
+            ><span class="step"><b>02</b> Review findings</span
+            ><span class="connector"></span
+            ><span class="step"><b>03</b> Give feedback</span>
+          </div>
+          <div class="review-grid">
+            <section class="panel input-panel">
+              <div class="panel-title">
+                <div>
+                  <span class="tiny-label">INPUT</span>
+                  <h2>Your change</h2>
+                </div>
+                <span class="tag">Python</span>
+              </div>
+              <form id="review-form">
+                <label for="title">Review name</label
+                ><input
+                  id="title"
+                  maxlength="200"
+                  placeholder="e.g. Add cart utilities"
+                  value="Untitled review"
+                  required
+                />
+                <div class="import-box">
+                  <label for="pr-url">Import a public GitHub PR</label>
+                  <div class="input-row">
+                    <input
+                      type="url"
+                      id="pr-url"
+                      placeholder="https://github.com/owner/repo/pull/123"
+                    /><button
+                      type="button"
+                      id="import"
+                      class="button small secondary"
+                    >
+                      Import
+                    </button>
+                  </div>
+                  <p class="microcopy">
+                    Read-only import · pinned to the head commit · Python files
+                    only
+                  </p>
+                  <p id="origin-label" class="origin-label" hidden></p>
+                </div>
+                <label for="diff"
+                  >Unified diff
+                  <span class="muted">or paste your change below</span></label
+                ><textarea
+                  id="diff"
+                  spellcheck="false"
+                  placeholder="diff --git a/cart.py b/cart.py&#10;--- a/cart.py&#10;+++ b/cart.py&#10;@@ -1 +1 @@&#10;-def add_item(item, cart=None):&#10;+def add_item(item, cart=[]):"
+                  required
+                ></textarea>
+                <div class="input-footer">
+                  <span id="diff-size">0 bytes</span
+                  ><span>250 KB / 30 files max</span>
+                </div>
+                <details class="context-details">
+                  <summary>Full source context <span>optional</span></summary>
+                  <p class="microcopy">
+                    Provide the complete new Python file contents as a JSON
+                    object keyed by path. Required for AST checks on partial
+                    diffs. Imported PRs include this when available.
+                  </p>
+                  <label for="source">New file contents (JSON)</label
+                  ><textarea
+                    id="source"
+                    spellcheck="false"
+                    placeholder='{"cart.py": "def add_item(item, cart=[]):\n    return cart\n"}'
+                  ></textarea>
+                </details>
+                <div class="mode-box">
+                  <label class="switch-row" for="ai"
+                    ><input id="ai" type="checkbox" /><span
+                      ><strong>Add local AI review</strong
+                      ><small id="model-label"
+                        >Uses your Ollama model; static checks always
+                        run.</small
+                      ></span
+                    ><span class="tag">OPTIONAL</span></label
+                  >
+                </div>
+                <button
+                  class="button primary review-button"
+                  id="run"
+                  type="submit"
+                >
+                  Review change <span>→</span>
+                </button>
+                <p class="privacy-copy">
+                  Source is parsed, never executed. Reviews are suggestions, not
+                  approval.
+                </p>
+              </form>
+            </section>
+            <section class="panel results-panel">
+              <div class="panel-title">
+                <div>
+                  <span class="tiny-label">REVIEW</span>
+                  <h2>Findings & evidence</h2>
+                </div>
+                <a id="export" class="button small secondary" hidden
+                  >Export ↗</a
+                >
+              </div>
+              <div id="results-empty" class="empty">
+                <div class="empty-icon">⌕</div>
+                <h3>A fresh perspective on your PR.</h3>
+                <p>
+                  Add a diff or load the sample to see findings with exact line
+                  references and test ideas.
+                </p>
+                <div class="feature-row">
+                  <span>↳ Line evidence</span><span>✓ Test ideas</span
+                  ><span>◉ Your feedback</span>
+                </div>
+              </div>
+              <div id="results" hidden>
+                <div class="result-summary">
+                  <div>
+                    <strong id="finding-count"></strong
+                    ><span id="result-mode" class="tag"></span>
+                  </div>
+                  <span id="latency" class="muted"></span>
+                </div>
+                <p id="result-meta" class="microcopy"></p>
+                <div id="warnings"></div>
+                <div class="filter-row" id="filters">
+                  <button data-filter="all" class="filter active">All</button
+                  ><button data-filter="high" class="filter">High</button
+                  ><button data-filter="medium" class="filter">Medium</button
+                  ><button data-filter="low" class="filter">Low</button>
+                </div>
+                <div id="finding-list"></div>
+                <details id="diff-preview">
+                  <summary>Inspect reviewed diff</summary>
+                  <div id="diff-files"></div>
+                </details>
+              </div>
+            </section>
+          </div>
+          <div class="trust-strip">
+            <div>
+              <span>01 / TRACEABLE</span>
+              <p>Every finding points to an added line.</p>
+            </div>
+            <div>
+              <span>02 / TRANSPARENT</span>
+              <p>Static checks and AI are clearly labeled.</p>
+            </div>
+            <div>
+              <span>03 / MEASURABLE</span>
+              <p>Inspect the benchmark, including misses.</p>
+            </div>
+          </div>
+        </section>
+        <section id="view-evaluate" class="view" hidden>
+          <div class="page-heading">
+            <div>
+              <div class="eyebrow">MEASURE, THEN TRUST</div>
+              <h1>Show the work<span>.</span></h1>
+              <p>
+                A reproducible benchmark with known bugs and clean controls.
+              </p>
+            </div>
+            <button id="benchmark" class="button primary">
+              Run benchmark <span>→</span>
+            </button>
+          </div>
+          <div class="bench-notice">
+            <strong>Synthetic development benchmark</strong>
+            <p>
+              These public fixtures test selected static patterns. They are not
+              held-out data or a production accuracy estimate. The dashboard
+              runs static checks; optional AI evaluation is available from the
+              command line.
+            </p>
+          </div>
+          <div class="metrics">
+            <div class="metric">
+              <span>PRECISION</span><strong id="precision">—</strong
+              ><small>Correct findings / all findings</small>
+            </div>
+            <div class="metric">
+              <span>RECALL</span><strong id="recall">—</strong
+              ><small>Detected labeled bugs / all labeled bugs</small>
+            </div>
+            <div class="metric">
+              <span>F1 SCORE</span><strong id="f1">—</strong
+              ><small>Balance of precision and recall</small>
+            </div>
+            <div class="metric">
+              <span>CLEAN PASS RATE</span><strong id="clean">—</strong
+              ><small>Clean controls with no findings</small>
+            </div>
+          </div>
+          <section class="panel">
+            <div class="panel-title">
+              <div>
+                <span class="tiny-label">CASE BY CASE</span>
+                <h2>Nothing hidden in the average.</h2>
+              </div>
+              <span id="bench-mode" class="tag">Not run yet</span>
+            </div>
+            <p id="bench-meta" class="microcopy pad">
+              Run the benchmark to inspect actual counts, timing and per-case
+              results.
+            </p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Case</th>
+                    <th>Expected</th>
+                    <th>Found</th>
+                    <th>Result</th>
+                    <th>Time</th>
+                  </tr>
+                </thead>
+                <tbody id="case-rows"></tbody>
+              </table>
+            </div>
+            <div class="pad">
+              <h3>Coverage by rule</h3>
+              <div id="category-results"></div>
+            </div>
+            <div id="bench-limitations" class="pad"></div>
+          </section>
+        </section>
+        <section id="view-history" class="view" hidden>
+          <div class="page-heading">
+            <div>
+              <div class="eyebrow">YOUR REVIEW NOTEBOOK</div>
+              <h1>Keep the useful parts<span>.</span></h1>
+              <p>
+                Results and feedback saved locally. Input source files are not
+                stored.
+              </p>
+            </div>
+            <button id="refresh-history" class="button secondary">
+              Refresh ↻
+            </button>
+          </div>
+          <section class="panel">
+            <div id="history-list" class="history-list"></div>
+          </section>
+        </section>
+        <footer>
+          <span>PatchPilot / Evidence-linked Python review</span
+          ><span>Built for thoughtful shipping.</span>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>
