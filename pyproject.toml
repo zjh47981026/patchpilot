@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "patchpilot-local"
+version = "1.0.0"
+description = "Evidence-linked Python PR review with local AI and transparent evaluation"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "MIT"}
+authors = [{name = "Jiahao Zhang"}]
+dependencies = []
+
+[project.scripts]
+patchpilot = "patchpilot.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["patchpilot*"]
+
+[tool.setuptools.package-data]
+patchpilot = ["static/*.html", "static/*.css", "static/*.js", "fixtures/*.json"]
